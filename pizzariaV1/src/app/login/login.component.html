@@ -1,91 +1,55 @@
+<div class="container">
 
 
-  <div class="container">
-     
+  <!-- Outer Row -->
+  <div class="row justify-content-center">
 
-    <!-- Outer Row -->
-    <div class="row justify-content-center">
+    <div class="col-xl-10 col-lg-12 col-md-9">
 
-      <div class="col-xl-10 col-lg-12 col-md-9">
+      <div class="card o-hidden border-0 shadow-lg my-5">
 
-        <div class="card o-hidden border-0 shadow-lg my-5">
 
-       
-            <div class="card-body p-0"> 
+        <div class="card-body p-0">
 
-                
-<div class="row">
-  
-  
-    <mat-progress-bar mode="query" color="warn" *ngIf="carregamentoPagina"></mat-progress-bar>
-  
-        <div class="col-lg-6 d-none d-lg-block bg-login">
-            <img id="img" src="../../assets/img/pp.ico" style="margin-left: 40%; margin-top: 15%">
-        </div>
-        <div class="col-lg-6">
-          <div class="p-5">
-            <div class="text-center">
-              <h1 class="h4 text-gray-900 mb-4">Olá, bem vindo de volta :)</h1>
+
+          <div class="row">
+
+
+            <mat-progress-bar mode="query" color="warn" *ngIf="carregamentoPagina"></mat-progress-bar>
+
+            <div class="col-lg-6 d-none d-lg-block bg-login">
+              <img id="img" src="../../assets/img/icons8-pizza-96.ico" style="margin-left: 50%; margin-top: 30%">
             </div>
-            <form [formGroup]="formularioLogin" (ngSubmit)="autenticar()" class="user" >
-              <div class="form-group">
-                <input type="email"
-                 class="form-control form-control-user" 
-                 id="email" aria-describedby="emailHelp"
-                  placeholder=" Endereço de e-mail..."
-                  formControlName="email"
-                  >
-              </div>
-              <div class="form-group">
-                <input type="password"
-                class="form-control form-control-user"
-                id="senha"
-                placeholder="Senha..."
-                formControlName="senha"
-                >
-              </div>
-
-              <div class="form-group" >
-                <p style="color: red">{{erroLogin}}</p>
-              </div>
-              <div class="form-group">
-                <div class="custom-control custom-checkbox small">
-                  <input type="checkbox" class="custom-control-input" id="customCheck">
-                  <label class="custom-control-label" for="customCheck">Lembrar de mim</label>
+            <div class="col-lg-6">
+              <div class="p-5">
+                <div class="text-center">
+                  <h1 class="h4 text-gray-900 mb-4">Olá, bem vindo de volta :)</h1>
                 </div>
+                <form [formGroup]="formularioLogin" (ngSubmit)="autenticar()" class="user">
+                  <div class="form-group">
+                    <input type="email" class="form-control form-control-user" id="email" aria-describedby="emailHelp"
+                      placeholder=" Endereço de e-mail..." formControlName="email">
+                  </div>
+                  <div class="form-group">
+                    <input type="password" class="form-control form-control-user" id="senha" placeholder="Senha..."
+                      formControlName="senha">
+                  </div>
+
+                  <div style="margin-bottom: 25px;" class="form-group">
+                    <p style="color: red">{{erroLogin}}</p>
+                  </div>
+
+                  <button type="submit" class="btn btn btn-user btn-block"
+                    style="background-color: orange; color: white; font-size: large;"
+                    [disabled]="!formularioLogin.valid">
+                    Login
+                  </button>
+                  <hr>
+                </form>
               </div>
-              <button type="submit"
-              class="btn btn btn-user btn-block" style="background-color: orange; color: white; font-size: large;"
-              [disabled]= "!formularioLogin.valid"
-              >
-                Login
-              </button>
-              <hr>
-
-              <!--
-              <button type="button" href="#" (click)="loginGoogle()" class="btn btn-google btn-user btn-block">
-                <i class="fab fa-google fa-fw"></i> Login com Google
-              </button>
-              -->
-            </form>
-           <!--
-            <div class="text-center">
-              <a class="small" href="forgot-password.html">Esqueceu a senha? Clique aqui !!!</a>
             </div>
-            -->
+          </div>
         </div>
-
-
       </div>
-           
-            </div>
-      
-        </div>
-
-
-      </div>
-
     </div>
-
   </div>
-
