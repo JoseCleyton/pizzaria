@@ -1,0 +1,149 @@
+<div class="container-fluid">
+    <div class="justify-content-center" style="margin-bottom: 20px"><a routerLink="" class="link font-italic"
+            style="color:orange">Painel de Controle</a> <strong> -></strong> Inserir Cliente</div>
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Inserir Cliente</h1>
+    </div>
+
+    <div class="offset-md-1 d-sm-flex align-items-center justify-content-between mb-4">
+        <h4 class="h4 mb-0 text-gray-700"><i>Inserir Novo Cliente</i></h4>
+    </div>
+
+    <form [formGroup]="formularioInserirCliente" (ngSubmit)="inserirCliente()">
+        <div class="row offset-md-1">
+
+            <div class="col-xl-2 col-md-4 mb-12" matTooltip="Digite o nome do Cliente" style="margin-right: 20px;">
+                <mat-form-field color="warn" class="example-full-width">
+                    <mat-icon matSuffix><i class="fas fa-user"></i></mat-icon>
+                    <input type="text" matInput placeholder="Nome do Cliente" value="" formControlName="nomeCliente">
+                </mat-form-field>
+            </div>
+
+            <div class="col-xl-2 col-md-4 mb-12" matTooltip="Insira o número de telefone do Cliente"
+                style="margin-right: 20px;">
+                <mat-form-field color="warn" class="example-full-width">
+                    <mat-icon matSuffix><i class="fas fa-phone-alt"></i></mat-icon>
+                    <input type="number" matInput placeholder="Telefone" value="" formControlName="telefone">
+                </mat-form-field>
+            </div>
+
+            <div class="col-xl-2 col-md-4 mb-12" matTooltip="Insira o nome da rua" style="margin-right: 20px;">
+                <mat-form-field color="warn" class="example-full-width">
+                    <mat-icon matSuffix><i class="fas fa-map-marker-alt"></i></mat-icon>
+                    <input type="text" matInput placeholder="Rua" value="" formControlName="rua">
+                </mat-form-field>
+            </div>
+
+            <div class="col-xl-2 col-md-4 mb-12" matTooltip="Insira o nome do bairro" style="margin-right: 20px;">
+                <mat-form-field color="warn" class="example-full-width">
+                    <mat-icon matSuffix><i class="fas fa-map-marker-alt"></i></mat-icon>
+                    <input type="text" matInput placeholder="Bairro" value="" formControlName="bairro">
+                </mat-form-field>
+            </div>
+
+            <div class="col-xl-2 col-md-4 mb-12" matTooltip="Insira o número da casa" style="margin-right: 20px;">
+                <mat-form-field color="warn" class="example-full-width">
+                    <mat-icon matSuffix><i class="fas fa-sort-numeric-up-alt"></i></mat-icon>
+                    <input type="number" matInput placeholder="Número" value="" formControlName="numero">
+                </mat-form-field>
+            </div>
+
+            <div class="offset-md-4 col-xl-2 col-md-4 mb-12" style="margin-top: 5px"
+                *ngIf="!formularioInserirCliente.valid else habilitarBotao"
+                matTooltip="Preencha o formulário para habilitar o botão">
+                <button type="submit" class="btn btn-warning" [disabled]="!formularioInserirCliente.valid">
+                    Cadastrar Cliente
+                </button>
+            </div>
+
+            <ng-template #habilitarBotao>
+                <div class="offset-md-4 col-xl-2 col-md-4 mb-12" style="margin-top: 5px">
+                    <button type="button" class="btn btn-warning" matTooltip="Clique para cadastrar o Cliente"
+                        data-toggle="modal" data-target=".bd-inserirCliente-modal-xl" (click)="inserirCliente()">
+                        Cadastrar Cliente
+                    </button>
+                </div>
+            </ng-template>
+
+        </div>
+    </form>
+</div>
+
+
+
+<!-- Modal Inserir Cliente -->
+<div *ngIf="cliente !== null && cliente !==undefined " class="modal fade bd-inserirCliente-modal-xl" tabindex="-1"
+    role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalScrollableTitle">Confirmar Cadastro</h5>
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5 class="modal-title" id="exampleModalScrollableTitle">Cliente</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="text-align: center">Nome</th>
+                                <th scope="col" style="text-align: center">Telefone</th>
+                                <th scope="col" style="text-align: center">Rua</th>
+                                <th scope="col" style="text-align: center">Bairro</th>
+                                <th scope="col" style="text-align: center">Número</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td scope="row" style="text-align: center">{{ cliente.nomeCliente }}</td>
+                                <td scope="row" style="text-align: center">{{ cliente.telefone }}</td>
+                                <td scope="row" style="text-align: center">{{ cliente.rua }}</td>
+                                <td scope="row" style="text-align: center">{{ cliente.bairro }}</td>
+                                <td scope="row" style="text-align: center">{{ cliente.numero }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="col-12 modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="submit" (click)="cadastrarCliente()" data-toggle="modal" data-dismiss="modal"
+                        data-target=".bd-status-modal-xl" class="btn btn-warning">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal STATUS-->
+<div class="modal fade bd-status-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalScrollableTitle">Status da Operação</h5>
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5 class="modal-title" id="exampleModalScrollableTitle">Status</h5>
+                <div class="justify-content-center offset-md-4">
+                    <mat-progress-spinner color="warn" *ngIf="carregamentoPagina" mode="indeterminate">
+                    </mat-progress-spinner>
+
+                    <h1 style="font-size: 20px; color: black"> {{ mensagem }} </h1>
+                </div>
+
+            </div>
+            <div class="col-12 modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="limparMensagem()"
+                    data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>

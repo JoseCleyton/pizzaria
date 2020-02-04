@@ -1,0 +1,414 @@
+<!-- Page Heading -->
+<div class="container-fluid">
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800"><i>Painel de Controle</i></h1>
+  </div>
+  <div style="margin-bottom: 15px;" *ngIf="caixaAberto == false"
+    class="row btn btn-warning d-sm-flex align-items-center justify-content-center">
+    <button type="button" data-toggle="modal" data-target=".bd-modalAbrirCaixa-modal-xl" class="btn btn-warning">
+      <h3>Caixa fechado, clique para abrir!</h3>
+    </button>
+  </div>
+  <!-- Content Row -->
+  <div class="row">
+    <div class="col-xl-3 col-md-6 mb-12">
+      <div class="card border-left-success shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="font-weight-bold text-primary text-uppercase mb-1 text-center">Caixa</div>
+              <div class="text-xs font-weight-bold text-primary text-lowercase mb-1">Valor do Acixa</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800 d-flex justify-content-center">
+                <mat-progress-spinner class="offset-md-5" *ngIf="loadValorCaixa" color="warn" mode="indeterminate">
+                </mat-progress-spinner>
+                <div *ngIf="!loadValorCaixa">
+                  {{ valorCaixa | currency :'BRL':true }}
+                  <br>
+                  <div *ngIf="caixaAberto else caixaFechado">
+                    <h4>Aberto</h4>
+                  </div>
+                  <ng-template #caixaFechado>
+                    <div>
+                      <h4>Fechado</h4>
+                    </div>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+            <button class="btn" type="button" data-toggle="modal" data-target=".bd-modalFecharCaixa-modal-xl">
+              <div class="col-auto">
+                <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-3 col-md-6 mb-12">
+      <div class="card border-left-warning shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="font-weight-bold text-primary text-uppercase mb-1 text-center">Pedidos Totais</div>
+              <div class="text-xs font-weight-bold text-primary text-lowercase mb-1">Total de Pedidos Efetuados</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800 d-flex justify-content-center">
+                <mat-progress-spinner class="offset-md-5" *ngIf="loadPedidos" color="warn" mode="indeterminate">
+                </mat-progress-spinner>
+                <div *ngIf="!loadPedidos">
+                  {{ pedidosTotais }}
+                </div>
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-book-open fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Earnings (Monthly) Card Example -->
+
+    <div class="col-xl-3 col-md-6 mb-12">
+      <div class="card border-left-warning shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="font-weight-bold text-primary text-uppercase mb-1 text-center">Pedidos Ativos</div>
+              <div class="text-xs font-weight-bold text-primary text-lowercase mb-1">Total de Orders Ativos</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800 d-flex justify-content-center">
+                <mat-progress-spinner class="offset-md-5" *ngIf="loadPedidos" color="warn" mode="indeterminate">
+                </mat-progress-spinner>
+                <div *ngIf="!loadPedidos">
+                  {{ pedidosAtivos }}
+                </div>
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-paste fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-12">
+      <div class="card border-left-warning shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="font-weight-bold text-primary text-uppercase mb-1 text-center">Produtos</div>
+              <div class="text-xs font-weight-bold text-primary text-lowercase mb-1">Total de Produtos no Estoque</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800 d-flex justify-content-center">
+                <mat-progress-spinner class="offset-md-5" *ngIf="loadProdutos" color="warn" mode="indeterminate">
+                </mat-progress-spinner>
+                <div *ngIf="!loadProdutos">
+                  {{ produtosTotais }}
+                </div>
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-pizza-slice fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-sm-flex align-items-center justify-content-between mb-4" style="margin-top: 30px;">
+    <h1 class="h3 mb-0 text-gray-800"><i>Menu Rápido</i></h1>
+  </div>
+
+  <!-- MENU RÁPIDO -->
+  <div class="row">
+    <div class="col-xl-4 col-md-6 mb-12" matTooltip="Clique para abrir um Order">
+      <div class="card border-left-warning shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="font-weight-bold text-primary text-uppercase mb-1 text-center">Pedido</div>
+              <div class="text-xs font-weight-bold text-primary text-lowercase mb-1">Abrir Pedido:</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800 d-flex justify-content-center">
+                <a routerLink="inserirPedido">
+                  <div class="col-auto">
+                    <i><img src="../../assets/img/icons8-adicionar-arquivo-48.png"></i>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-4 col-md-6 mb-12" matTooltip="Clique para abrir Imprimir um Order">
+      <div class="card border-left-warning shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="font-weight-bold text-primary text-uppercase mb-1 text-center">Imprimir</div>
+              <div class="text-xs font-weight-bold text-primary text-lowercase mb-1">Imprimir Orders:</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800 d-flex justify-content-center">
+                <button (click)="carregarPedidos()" class="btn" type="button" data-toggle="modal" data-target=".bd-modalImprimir-modal-xl">
+                  <div class="col-auto">
+                    <i><img src="../../assets/img/icons8-enviar-para-a-impressora-40.png"></i>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-4 col-md-6 mb-12" matTooltip="Clique para Cadastrar um Produto">
+      <div class="card border-left-warning shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="font-weight-bold text-primary text-uppercase mb-1 text-center">Produto</div>
+              <div class="text-xs font-weight-bold text-primary text-lowercase mb-1">Cadastrar Produtos</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800 d-flex justify-content-center">
+                <a routerLink="inserirProduto">
+                  <div class="col-auto">
+                    <i><img src="../../assets/img/icons8-adicionar-48.png"></i>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--
+    <div class="col-xl-12 col-md-12 mb-12" style="margin-top: 20px">
+      <div class="card border-left-warning shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <mat-progress-spinner class="offset-md-5" *ngIf="load" mode="indeterminate"> </mat-progress-spinner>
+              <canvas *ngIf="mostrarGrafico" baseChart [datasets]="lineChartData" [labels]="lineChartLabels"
+                [colors]="lineChartColors" [legend]="lineChartLegend" [chartType]="lineChartType"
+                [plugins]="lineChartPlugins">
+              </canvas>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+-->
+  </div>
+</div>
+
+<!--Modal Imprimir-->
+<div class="modal fade bd-modalImprimir-modal-xl" id="exampleModal" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Imprimir Pedido</h5>
+        <button type="button" class="close" (click)="limparPesquisa()" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <div class="row">
+          <div class="col-xl-6 col-md-12 col-sm-12">
+            <mat-accordion class="col-md-12">
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Número do Pedido
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    Número
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <mat-form-field color="warn">
+                  <mat-label>Número</mat-label>
+                  <input color="warn" #numeroPedido matInput placeholder="Número"
+                    (keyup)="buscarPorNumeroPedido(numeroPedido.value)">
+                  <mat-icon matSuffix><i class="fas fa-sort-numeric-up-alt"></i></mat-icon>
+                </mat-form-field>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+          <div class="col-xl-6 col-md-12 col-sm-12" style="margin-top: 24px;">
+            <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Nome do Cliente
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    Nome
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <mat-form-field color="warn">
+                  <mat-label>Nome</mat-label>
+                  <input #nomeCliente matInput placeholder="Nome" (keyup)="buscarPorNomeCliente(nomeCliente.value)">
+                  <mat-icon matSuffix><i class="fas fa-user"></i></mat-icon>
+                </mat-form-field>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top: 30px">
+
+          <mat-progress-bar *ngIf="carregamentoPagina" mode="query" color="warn"></mat-progress-bar>
+
+          <div class="table-responsive">
+
+            <table class="table table-striped">
+
+              <thead>
+                <tr>
+                  <th scope="col" style="text-align: center">#</th>
+                  <th scope="col" style="text-align: center">Cliente</th>
+                  <th scope="col" style="text-align: center">Valor Pedido</th>
+                  <th scope="col" style="text-align: center">Ação</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let pedido of pedidos">
+                  <td scope="row" style="text-align: center">{{ pedido.idPedido }}</td>
+                  <td scope="row" style="text-align: center">{{ pedido.cliente.nomeCliente }}</td>
+                  <td scope="row" style="text-align: center">{{ pedido.valorPedido | currency :'BRL':true }}</td>
+                  <td scope="row" style="text-align: center">
+                    <button class="btn btn-warning" style="margin-left: 5px"
+                      (click)="imprimirComanda(pedido.idPedido, 'Preparo')">
+                      <i class="fas fa-print" style="margin-right: 3px;"></i><i class="fas fa-pizza-slice"></i>
+                    </button>
+                    <button class="btn btn-warning" style="margin-left: 5px"
+                      (click)="imprimirComanda(pedido.idPedido, 'Delivery')">
+                      <i class="fas fa-print" style="margin-right: 3px;"></i><i class="fas fa-motorcycle"></i>
+                    </button>
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+            <h1 style="text-align: center" class="h3 mb-0 text-gray-800">{{ mensagemCarregamento }}</h1>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="limparPesquisa()" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal Abrir Caixa-->
+<div class="modal fade bd-modalAbrirCaixa-modal-xl" id="exampleModal" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Abrir Caixa</h5>
+        <button type="button" class="close" (click)="limparMensagemCaixa()" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <div class="container-fluid">
+
+          <form [formGroup]="formularioAbrirCaixa" (ngSubmit)="abrirCaixa()">
+
+            <mat-form-field color="warn" class="example-full-width col-xl-6 col-md-12 col-sm-12"
+              matTooltip="Digite o valor para abrir o Caixa">
+              <mat-icon matSuffix><i class="fas fa-dollar-sign"></i></mat-icon>
+              <input type="number" matInput placeholder="Valor Do Caixa" formControlName="valorCaixa">
+            </mat-form-field>
+            <button class="btn btn-warning col-xl-6 col-md-12 col-sm-12" [disabled]="!formularioAbrirCaixa.valid">Abrir
+              Caixa</button>
+          </form>
+        </div>
+
+        <div class="row" style="margin-top: 30px">
+
+          <mat-progress-bar *ngIf="carregamentoAbrirCaixa" mode="query" color="warn"></mat-progress-bar>
+
+          <div class="offset-md-1">
+            <h1 style="text-align: center" class="h3 mb-0 text-gray-800 align-items-center">{{ mensagemAbrirCaixa }}
+            </h1>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="limparMensagemCaixa()"
+          data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal Fechar Caixa-->
+<div class="modal fade bd-modalFecharCaixa-modal-xl" id="exampleModal" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Fechar Caixa</h5>
+        <button type="button" class="close" (click)="limparMensagemCaixa()" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <div class="container-fluid">
+
+          <div class="offset-md-2">
+            <h1>{{ valorCaixa | currency :'BRL':true }}
+              <i class="fas fa-dollar-sign fa-2x text-gray-300"></i></h1>
+            <div *ngIf="caixaAberto else caixaFechado">
+              <h4>Aberto</h4>
+            </div>
+            <ng-template #caixaFechado>
+              <div>
+                <h4>Fechado</h4>
+              </div>
+            </ng-template>
+            <div>
+            </div>
+          </div>
+
+          <button *ngIf="caixaAberto" class="offset-md-2 btn btn-warning col-xl-6 col-md-6 col-sm-12"
+            (click)="fecharCaixa()">Fechar
+            Caixa</button>
+
+        </div>
+
+        <div class="row" style="margin-top: 30px">
+
+          <mat-progress-bar *ngIf="carregamentoAbrirCaixa" mode="query" color="warn"></mat-progress-bar>
+
+          <div class="table-responsive">
+
+
+            <h1 style="text-align: center" class="h3 mb-0 text-gray-800">{{ mensagemAbrirCaixa }}</h1>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="limparMensagemCaixa()"
+          data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>

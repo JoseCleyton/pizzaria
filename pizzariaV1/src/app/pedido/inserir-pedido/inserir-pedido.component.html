@@ -1,0 +1,382 @@
+<div class="container-fluid">
+  <div class="justify-content-center" style="margin-bottom: 20px"><a routerLink="" class="link font-italic"
+      style="color:orange">Painel de Controle</a> <strong> -></strong> Inserir Novo Pedido</div>
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Inserir Pedido</h1>
+  </div>
+  <mat-progress-bar *ngIf="carregamentoPagina" color="warn" mode="query"></mat-progress-bar>
+  <form *ngIf="carregamentoPagina === false" [formGroup]="formularioInserirProduto"
+    (ngSubmit)="adicionarProdutoALista()">
+    <div class="row offset-md-1">
+      <div class="col-xl-4 col-md-4 mb-12" style="margin-top: 5px"
+        matTooltip="Selecione o produto para adicionar ao Pedido">
+        <mat-form-field color="warn" class="example-full-width">
+          <mat-icon matSuffix><i class="fas fa-pizza-slice"></i></mat-icon>
+          <mat-select placeholder="Produto" formControlName="idProduto">
+            <mat-option *ngFor="let produto of produtos" value="{{ produto.id }} ">{{produto.nome}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+      </div>
+      <div class="col-xl-1 col-md-2 mb-12" style="margin-top: 5px" matTooltip="Informe a quantidade do produto">
+        <mat-form-field color="warn" class="example-full-width">
+          <mat-icon matSuffix><i class="fas fa-sort-numeric-up"></i></mat-icon>
+          <input matInput placeholder="Quantidade" formControlName="qtd" value="">
+        </mat-form-field>
+      </div>
+      <div class="col-xl-2 col-md-2 mb-12" style="margin-top: 5px">
+
+      </div>
+      <div class="col-xl-2 col-md-4 mb-12" style="margin-top: 5px"
+        *ngIf="!formularioInserirProduto.valid else habilitarBotao"
+        matTooltip="Preencha o formulário para habilitar o botão">
+        <button type="submit" class="btn btn-warning" [disabled]="!formularioInserirProduto.valid">
+          Adicionar Produto
+        </button>
+      </div>
+      <div class="col-xl-2 col-md-4 mb-12" style="margin-top: 5px"
+        *ngIf="habilitarBotaoModal else botaoModalFecharPedido"
+        matTooltip="Adicione um produto ao Order para habilitar o botão">
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target=".bd-example-modal-xl"
+          [disabled]="habilitarBotaoModal">
+          Fechar Pedido
+        </button>
+      </div>
+    </div>
+  </form>
+  <ng-template #botaoModalFecharPedido>
+    <div class="col-xl-2 col-md-4 mb-12" style="margin-top: 5px">
+      <button type="button" class="btn btn-success" data-toggle="modal" data-target=".bd-example-modal-xl"
+        matTooltip="Clique para fechar o Order e preencher os dados do Cliente">
+        Fechar Pedido
+      </button>
+    </div>
+  </ng-template>
+  <ng-template #habilitarBotao>
+    <div class="col-xl-2 col-md-4 mb-12" style="margin-top: 5px">
+      <button type="submit" class="btn btn-warning" matTooltip="Clique para adicionar o produto ao Pedido">
+        Adicionar Produto
+      </button>
+    </div>
+  </ng-template>
+
+  <div class="row" style="margin-top: 30px">
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col" style="text-align: center">#</th>
+            <th scope="col" style="text-align: center">Produto</th>
+            <th scope="col" style="text-align: center">Quantidade</th>
+            <th scope="col" style="text-align: center">Valor Unitário</th>
+            <th scope="col" style="text-align: center">Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let iten of itensPedido">
+            <td scope="row" style="text-align: center">{{ iten.id }}</td>
+            <td scope="row" style="text-align: center">{{ iten.produto.nome }}</td>
+            <td scope="row" style="text-align: center">{{ iten.qtd }}</td>
+            <td scope="row" style="text-align: center">{{ iten.produto.valorUnitario | currency :'BRL':true }}</td>
+            <td scope="row" style="text-align: center"> <button type="button" (click)="procurarItemExcluir(iten.id)"
+                data-toggle="modal" data-target=".bd-excluir-modal-xl" class="btn btn-danger">Excluir</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- Itens Pedido -->
+<div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <mat-progress-bar *ngIf="carregamentoPagina" mode="indeterminate"></mat-progress-bar>
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalScrollableTitle">Pedido</h5>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h5 class="modal-title" id="exampleModalScrollableTitle">Itens do Pedido</h5>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col" style="text-align: center">#</th>
+                <th scope="col" style="text-align: center">Produto</th>
+                <th scope="col" style="text-align: center">Quantidade</th>
+                <th scope="col" style="text-align: center">Valor Unitário</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let iten of itensPedido">
+                <td scope="row" style="text-align: center">{{ iten.id }}</td>
+                <td scope="row" style="text-align: center">{{ iten.produto.nome }}</td>
+                <td scope="row" style="text-align: center">{{ iten.qtd }}</td>
+                <td scope="row" style="text-align: center">{{ iten.produto.valorUnitario | currency :'BRL':true  }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row">
+
+        </div>
+        <div class="col-xl-4 btn-group" matTooltip="Clique para filtrar por tipo" style="margin-top: 10px;">
+          <mat-radio-group color="warn" aria-label="Selecione o Tipo">
+            <mat-radio-button value="clienteJaCadastrado" formContrlName="clienteJaCadastrado" (click)="buscarTodosClientes()" data-toggle="modal"
+              data-target=".bd-clienteCadastrado-xl">
+              Cliente já Cadastrado
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <form class="example-form" [formGroup]="formularioNomeCliente">
+          <div class="row">
+
+            <div class="col-xl-3 col-md-4 mb-12" style="margin-left: 20px;">
+              <mat-form-field color="warn" class="example-full-width">
+                <mat-icon matSuffix><i class="fas fa-user"></i></mat-icon>
+                <input matInput placeholder="Nome do Cliente" value="" formControlName="nomeCliente">
+              </mat-form-field>
+            </div>
+            <div class="col-xl-3 col-md-4 mb-12" style="margin-left: 20px;">
+              <mat-form-field color="warn" class="example-full-width" style="margin-left: 10px;">
+                <mat-icon matSuffix><i class="fas fa-text-height"></i></mat-icon>
+                <input matInput placeholder="Observações" value="" formControlName="observacoes">
+              </mat-form-field>
+            </div>
+            <div class="col-xl-3 col-md-4 mb-12" style="margin-left: 20px;">
+              <mat-form-field color="warn" class="example-full-width" style="margin-left: 10px;">
+                <mat-icon matSuffix><i class="fas fa-phone-alt"></i></mat-icon>
+                <input matInput placeholder="Telefone" value="" formControlName="telefone">
+              </mat-form-field>
+            </div>
+
+            <div class="col-12">
+
+              <mat-form-field color="warn" class="example-full-width" style="margin-left: 20px;">
+                <mat-icon matSuffix><i class="fas fa-map-marker-alt"></i></mat-icon>
+                <input matInput placeholder="Rua" value="" formControlName="rua">
+              </mat-form-field>
+
+              <mat-form-field color="warn" class="example-full-width" style="margin-left: 20px;">
+                <mat-icon matSuffix><i class="fas fa-map-marker-alt"></i></mat-icon>
+                <input matInput placeholder="Bairro" value="" formControlName="bairro">
+              </mat-form-field>
+
+              <mat-form-field color="warn" class="example-full-width" style="margin-left: 20px;">
+                <mat-icon matSuffix><i class="fas fa-sort-numeric-up-alt"></i></mat-icon>
+                <input matInput placeholder="Número" value="" formControlName="numero">
+              </mat-form-field>
+
+            </div>
+
+
+            <div class="offset-md-4 col" style="margin-top: 30;">
+
+              <div class="btn-group" matTooltip="Clique para selecionaro tipo de pagamento"
+                style="margin-bottom: 20px;">
+                <mat-radio-group color="warn" aria-label="Selecione o Tipo" formControlName="tipoPagamento">
+                  <mat-radio-button value="credito">Crédito</mat-radio-button>
+                  <mat-radio-button value="debito" style="margin-left: 5px;">Dédito
+                  </mat-radio-button>
+                  <mat-radio-button value="dinheiro" style="margin-left: 5px;">Dinheiro
+                  </mat-radio-button>
+                </mat-radio-group>
+              </div>
+
+              <div class="input-group">
+
+                <mat-form-field color="warn" class="example-full-width">
+                  <mat-icon matSuffix><i class="fas fa-dollar-sign"></i></mat-icon>
+                  <input type="number" matInput placeholder="Valor Pedido" readonly
+                    value="{{ pedidoService.getValorOrder() }}" formControlName="valorPedido"
+                    style="background: whitesmoke; font-size: x-large; color: orange;">
+                </mat-form-field>
+
+              </div>
+            </div>
+
+            <div class="col-12 modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="limparMensagem()"
+                data-dismiss="modal">Fechar</button>
+              <button type="submit" (click)="inserirPedido()" data-toggle="modal" data-dismiss="modal"
+                data-target=".bd-status-modal-xl" [disabled]="!formularioNomeCliente.valid"
+                class="btn btn-success">Realizar
+                Pedido</button>
+            </div>
+          </div>
+        </form>
+
+
+        <div class="offset-md-2 col-6">
+          <h1 style="font-size: 20px; color: black"> {{ mensagem }} </h1>
+        </div>
+
+      </div>
+
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal Excluir Item -->
+<div *ngIf="itemExcluir !==null" class="modal fade bd-excluir-modal-xl" id="exampleModal" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Excluir Item</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col" style="text-align: center">#</th>
+                <th scope="col" style="text-align: center">Produto</th>
+                <th scope="col" style="text-align: center">Quantidade</th>
+                <th scope="col" style="text-align: center">Valor Unitário</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td scope="row" style="text-align: center">{{itemExcluir.id}}</td>
+                <td scope="row" style="text-align: center">{{ itemExcluir.produto.nome }}</td>
+                <td scope="row" style="text-align: center">{{ itemExcluir.qtd }}</td>
+                <td scope="row" style="text-align: center">
+                  {{ itemExcluir.produto.valorUnitario | currency :'BRL':true  }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        <button type="button" (click)="deletarItem()" data-dismiss="modal" class="btn btn-danger">Excluir</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--STATUS DA OPERAÇÃO-->
+<div class="modal fade bd-status-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalScrollableTitle">Status da Operação</h5>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h5 class="modal-title" id="exampleModalScrollableTitle">Status</h5>
+        <div class="justify-content-center offset-md-2">
+          <mat-progress-spinner color="warn" *ngIf="carregamentoPagina" mode="indeterminate"></mat-progress-spinner>
+
+          <h1 style="font-size: 20px; color: black"> {{ mensagem }} </h1>
+        </div>
+
+      </div>
+      <div class="col-12 modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="limparMensagem()" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--Buscar Cliente Cadastrado-->
+<div class="modal fade bd-clienteCadastrado-xl" id="exampleModal" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Buscar Cliente Cadastrado</h5>
+        <button type="button" class="close" (click)="limparPesquisa()" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <div class="row">
+          <div class="col-xl-6 col-md-12 col-sm-12" style="margin-top: 24px;">
+            <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Nome do Cliente
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    Nome
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <mat-form-field color="warn">
+                  <mat-label>Nome</mat-label>
+                  <input #nomeCliente matInput placeholder="Nome" (keyup)="buscarPorNomeCliente(nomeCliente.value)">
+                  <mat-icon matSuffix><i class="fas fa-user"></i></mat-icon>
+                </mat-form-field>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top: 30px">
+
+          <mat-progress-bar *ngIf="carregamentoPagina" mode="query" color="warn"></mat-progress-bar>
+
+          <div class="table-responsive">
+
+            <table class="table table-striped">
+
+              <thead>
+                <tr>
+                  <th scope="col" style="text-align: center">#</th>
+                  <th scope="col" style="text-align: center">Cliente</th>
+                  <th scope="col" style="text-align: center">Telefone</th>
+                  <th scope="col" style="text-align: center">Rua</th>
+                  <th scope="col" style="text-align: center">Número</th>
+                  <th scope="col" style="text-align: center">Bairro</th>
+                  <th scope="col" style="text-align: center">Selecionar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let cliente of clientes">
+                  <td scope="row" style="text-align: center">{{ cliente.idCliente }}</td>
+                  <td scope="row" style="text-align: center">{{ cliente.nomeCliente }}</td>
+                  <td scope="row" style="text-align: center">{{ cliente.telefone }}</td>
+                  <td scope="row" style="text-align: center">{{ cliente.rua }}</td>
+                  <td scope="row" style="text-align: center">{{ cliente.numero }}</td>
+                  <td scope="row" style="text-align: center">{{ cliente.bairro}}</td>
+                  <td scope="row" style="text-align: center">
+                    <button class="btn btn-warning" (click)="selecionarCliente(cliente.idCliente)" data-dismiss="modal">
+                      <i class="fas fa-mouse-pointer"></i>
+                    </button>
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+            <h1 style="text-align: center" class="h3 mb-0 text-gray-800">{{ mensagemCarregamento }}</h1>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="limparPesquisa()" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>

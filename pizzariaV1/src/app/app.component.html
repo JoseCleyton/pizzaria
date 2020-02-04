@@ -1,0 +1,113 @@
+<div *ngIf="idTokenDivinaProvidencia === null; else usuarioLogado">
+  <app-login (eventoLogin)="login($event)"></app-login>
+</div>
+
+<ng-template #usuarioLogado>
+  <div id="wrapper">
+
+    <ul class="navbar-nav bg-gradient sidebar sidebar-dark accordion collapse btn btn-warning" id="accordionSidebar">
+
+      <!-- Sidebar - Brand -->
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" routerLink="home"
+        style="margin-bottom: 30px; margin-top: 15px;">
+        <div class="sidebar-brand-icon ">
+          <img src="../assets/img/pp.ico" style="max-width: 70px; max-height: 70px">
+        </div>
+
+      </a>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
+
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item" matTooltip="Informações Gerais">
+        <a class="nav-link" routerLink="home">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span style="font-size: large;">Painel de Controle</span></a>
+      </li>
+      <!-- Divider -->
+      <hr class="sidebar-divider">
+
+      <!-- Nav Item - Utilities Collapse Menu -->
+      <li class="nav-item" matTooltip="Inserir, Listar - Client">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#Clients" aria-expanded="true"
+          aria-controls="Clients">
+          <i class="fas fa-user"></i>
+          <span style="font-size: large">Clientes</span>
+        </a>
+        <div id="Clients" class="collapse" aria-labelledby="Clients" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item" routerLink="inserirCliente">Inserir Cliente</a>
+            <a class="collapse-item" routerLink="listarTodosClientes">Listar Todos Clientes</a>
+          </div>
+        </div>
+      </li>
+      <!-- Divider -->
+      <hr class="sidebar-divider">
+
+      <!-- Nav Item - Utilities Collapse Menu -->
+      <li class="nav-item" matTooltip="Inserir, Listar - Pedido">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pedidos" aria-expanded="true"
+          aria-controls="pedidos">
+          <i class="fas fa-paste"></i>
+          <span style="font-size: large">Pedidos</span>
+        </a>
+        <div id="pedidos" class="collapse" aria-labelledby="pedidos" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item" routerLink="inserirPedido">Inserir Pedido</a>
+            <a class="collapse-item" routerLink="listarPedidosAbertos">Listar Pedidos Abertos</a>
+            <a class="collapse-item" routerLink="listarTodosPedidos">Listar Todos Pedidos</a>
+          </div>
+        </div>
+      </li>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider">
+      <!-- Nav Item - Pages Collapse Menu -->
+      <li class="nav-item" matTooltip="Inserir, Listar - Produto">
+        <a class="nav-link" href="#" data-toggle="collapse" data-target="#produtos" aria-expanded="true"
+          aria-controls="produtos">
+          <i class="fas fa-database"></i>
+          <span style="font-size: large">Produtos</span>
+        </a>
+        <div id="produtos" class="collapse" aria-labelledby="produtos" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item" routerLink="inserirProduto">Inserir Produto</a>
+            <a class="collapse-item" routerLink="listarEstoque">Listar todo Estoque</a>
+          </div>
+        </div>
+      </li>
+      <hr class="sidebar-divider">
+      <li class="nav-item" matTooltip="Relatório - Caixa">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#caixa" aria-expanded="true"
+          aria-controls="caixa">
+          <i class="fas fa-dollar-sign"></i>
+          <span style="font-size: large">Relatório Caixa</span>
+        </a>
+        <div id="caixa" class="collapse" aria-labelledby="caixa" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item" routerLink="relatorio">Relatório</a>
+          </div>
+
+        </div>
+      </li>
+
+    </ul>
+
+
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <div id="content">
+
+        <app-topo (eventoLogout)="logout($event)"></app-topo>
+
+
+        <router-outlet></router-outlet>
+
+
+      </div>
+
+      <app-rodape></app-rodape>
+    </div>
+  </div>
+</ng-template>

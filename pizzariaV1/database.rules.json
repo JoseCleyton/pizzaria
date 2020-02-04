@@ -1,0 +1,26 @@
+{
+  "rules": { 
+    
+    "pedidos":{
+       ".read": "auth.uid != null && auth.uid === '3v40hn6GbyQx6QdYBGykaCW0S0H3'",
+      	
+   		 ".write": "auth.uid != null && auth.uid === '3v40hn6GbyQx6QdYBGykaCW0S0H3'"
+    },
+      "caixa":{
+       ".read": "auth.uid != null && auth.uid === '3v40hn6GbyQx6QdYBGykaCW0S0H3'",
+         
+   		 ".write": "auth.uid != null && auth.uid === '3v40hn6GbyQx6QdYBGykaCW0S0H3'"
+    },
+      "estoque":{
+       ".read": "auth.uid != null && auth.uid === '3v40hn6GbyQx6QdYBGykaCW0S0H3'",
+         
+   		 ".write": "auth.uid != null && auth.uid === '3v40hn6GbyQx6QdYBGykaCW0S0H3'"
+    },
+      "clientes":{
+       ".read": "auth.uid != null && auth.uid === '3v40hn6GbyQx6QdYBGykaCW0S0H3'",
+         
+   		 ".write": "auth.uid != null && auth.uid === '3v40hn6GbyQx6QdYBGykaCW0S0H3'"
+    }
+   
+  }
+}

@@ -1,0 +1,430 @@
+<div class="container-fluid">
+  <div class="justify-content-center" style="margin-bottom: 20px"><a routerLink="" class="link font-italic"
+      style="color:orange">Painel de Controle</a> <strong> -></strong> Listar Pedidos Abertos</div>
+
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Pedidos Abertos</h1>
+  </div>
+
+  <div class="row offset-md-1" style="margin-top: 0px;">
+    <div class="col-xl-6 btn-group" matTooltip="Clique para exibir o sub-menu" style="margin-top: 10px;">
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Pesquisar por Pedido
+            </mat-panel-title>
+            <mat-panel-description>
+              Número do Pedido
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <mat-form-field color="warn">
+            <mat-label>Número do Pedido</mat-label>
+            <input #numeroPedido matInput placeholder="Número" (keyup)="buscarPorNumeroPedido(numeroPedido.value)">
+            <mat-icon matSuffix><i class="fas fa-sort-numeric-up-alt"></i></mat-icon>
+          </mat-form-field>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+    <div class="col-xl-6 btn-group" matTooltip="Clique para exibir o sub-menu" style="margin-top: 10px;">
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Pesquisar por Cliente
+            </mat-panel-title>
+            <mat-panel-description>
+              Nome do Cliente
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <mat-form-field color="warn">
+            <mat-label>Nome do Cliente</mat-label>
+            <input #nomeCliente matInput placeholder="Nome" (keyup)="buscarPorNomeCliente(nomeCliente.value)">
+            <mat-icon matSuffix><i class="fas fa-user"></i></mat-icon>
+          </mat-form-field>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top: 30px">
+
+    <mat-progress-bar *ngIf="carregamentoPagina" color="warn" mode="query"></mat-progress-bar>
+
+    <div class="table-responsive">
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col" style="text-align: center">#</th>
+            <th scope="col" style="text-align: center">Nome do Cliente</th>
+            <th scope="col" style="text-align: center">Data Pedido</th>
+            <th scope="col" style="text-align: center">Status</th>
+            <th scope="col" style="text-align: center">Observações</th>
+            <th scope="col" style="text-align: center"> Valor do Pedido </th>
+            <th scope="col" style="text-align: center">Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr *ngFor="let pedido of pedidos">
+            <td scope="row" style="text-align: center">{{ pedido.idPedido }}</td>
+            <td scope="row" style="text-align: center">{{ pedido.cliente.nomeCliente }}</td>
+            <td scope="row" style="text-align: center">{{ pedido.dataPedido }}</td>
+            <td scope="row" style="text-align: center">
+              {{ pedido.status }}
+              <div *ngIf="pedido.status === 'aberto'" class="progress progress-sm mr-2">
+                <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%"
+                  aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </td>
+            <td scope="row" style="text-align: center">{{ pedido.observacoes }}</td>
+            <td scope="row" style="text-align: center">{{ pedido.valorPedido | currency :'BRL':true  }}</td>
+            <td scope="row" style="text-align: center">
+              <button data-toggle="modal" (click)="selecionarPedidoFinalizar(pedido.idPedido)"
+                data-target=".bd-fecharPedido-modal-xl" class="btn btn-success" style="margin-left: 5px">
+                <i class="far fa-check-circle"></i>
+              </button>
+              <button data-toggle="modal" data-target=".bd-modalImprimirComandaPreparo-modal-xl" class="btn btn-warning"
+                style="margin-left: 5px" (click)="selecionarPedidoImprimir(pedido.idPedido)">
+                <i class="fas fa-print" style="margin-right: 3px;"></i><i class="fas fa-pizza-slice"></i>
+              </button>
+              <button data-toggle="modal" data-target=".bd-modalImprimirComandaDelivery-modal-xl"
+                class="btn btn-warning" style="margin-left: 5px" (click)="selecionarPedidoImprimir(pedido.idPedido)">
+                <i class="fas fa-print" style="margin-right: 3px;"></i><i class="fas fa-motorcycle"></i>
+              </button>
+              <button data-toggle="modal" (click)="visualizarPedido(pedido.idPedido)"
+                data-target=".bd-visualizarPedido-modal-xl" class="btn btn-warning" style="margin-left: 5px">
+                <i class="fa fa-eye"></i>
+              </button>
+              <button data-toggle="modal" (click)="selecionarPedidoExcluir(pedido.idPedido)"
+                data-target=".bd-excluirPedido-modal-xl" class="btn btn-danger" style="margin-left: 5px">
+                <i class="fa fa-times-circle"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h1 style="text-align: center" class="h3 mb-0 text-gray-800">{{ mensagemCarregamento }}</h1>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Excluir Pedido  -->
+<div *ngIf="pedidoExcluir !== null " class="modal fade bd-excluirPedido-modal-xl" id="exampleModal" tabindex="-1"
+  role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Excluir Pedido</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col" style="text-align: center">#</th>
+              <th scope="col" style="text-align: center">Nome Cliente</th>
+              <th scope="col" style="text-align: center">Observações</th>
+              <th scope="col" style="text-align: center">Valor Pedido</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td scope="row" style="text-align: center">{{ pedidoExcluir.idPedido }}</td>
+              <td scope="row" style="text-align: center">{{ pedidoExcluir.cliente.nomeCliente }}</td>
+              <td scope="row" style="text-align: center">{{ pedidoExcluir.observacoes }}</td>
+              <td scope="row" style="text-align: center">{{ pedidoExcluir.valorPedido | currency :'BRL':true  }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        <button type="button" (click)="excluirPedido()" data-dismiss="modal" class="btn btn-danger">Excluir</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Fechar Pedido  -->
+<div *ngIf="pedidoFechar !== null" class="modal fade bd-fecharPedido-modal-xl" id="exampleModal" tabindex="-1"
+  role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> Fechar Pedido </h5>
+        <button type="button" (click)="limparMensagem()" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-striped" *ngIf="caixaAberto else caixarFechado">
+          <thead>
+            <tr>
+              <th scope="col" style="text-align: center">#</th>
+              <th scope="col" style="text-align: center">Nome Cliente</th>
+              <th scope="col" style="text-align: center">Observações</th>
+              <th scope="col" style="text-align: center">Valor Pedido</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td scope="row" style="text-align: center">{{ pedidoFechar.idPedido }}</td>
+              <td scope="row" style="text-align: center">{{ pedidoFechar.cliente.nomeCliente }}</td>
+              <td scope="row" style="text-align: center">{{ pedidoFechar.observacoes }}</td>
+              <td scope="row" style="text-align: center">{{ pedidoFechar.valorPedido | currency :'BRL':true  }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <ng-template #caixaFechado>
+          <div style="margin-bottom: 15px;" *ngIf="caixaAberto == false"
+            class="row btn btn-warning d-sm-flex align-items-center justify-content-center">
+            <button type="button" data-toggle="modal" data-target=".bd-modalAbrirCaixa-modal-xl"
+              class="btn btn-warning">
+              <h3>Impossivel fechar o Pedido, o Caixa está fechado, clique para abrir!</h3>
+            </button>
+          </div>
+        </ng-template>
+      </div>
+
+      <div *ngIf="caixaAberto" class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="limparMensagem()" data-dismiss="modal">Fechar</button>
+        <button type="button" (click)="fecharPedido()" data-toggle="modal" data-target=".bd-status-modal-xl"
+          class="btn btn-success" data-dismiss="modal">Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Visualizar Pedido-->
+<div *ngIf="pedidoVisualizar !== null" class="modal fade bd-visualizarPedido-modal-xl" id="exampleModal" tabindex="-1"
+  role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Visualizar Pedido</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col" style="text-align: center">#</th>
+              <th scope="col" style="text-align: center">Nome Cliente</th>
+              <th scope="col" style="text-align: center">Observações</th>
+              <th scope="col" style="text-align: center">Valor Pedido</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td scope="row" style="text-align: center">{{ pedidoVisualizar.idPedido }}</td>
+              <td scope="row" style="text-align: center">{{ pedidoVisualizar.cliente.nomeCliente }}</td>
+              <td scope="row" style="text-align: center">{{ pedidoVisualizar.observacoes }}</td>
+              <td scope="row" style="text-align: center">{{ pedidoVisualizar.valorPedido | currency :'BRL':true  }}</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-body">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Produtos</h5>
+        </div>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col" style="text-align: center">#</th>
+              <th scope="col" style="text-align: center">Nome Produto</th>
+              <th scope="col" style="text-align: center">Valor Unitário</th>
+              <th scope="col" style="text-align: center">Quantidade</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of pedidoVisualizar.itensPedido">
+              <td scope="row" style="text-align: center">{{ item.produto.id }}</td>
+              <td scope="row" style="text-align: center">{{ item.produto.nome }}</td>
+              <td scope="row" style="text-align: center">{{ item.produto.valorUnitario | currency :'BRL':true }}</td>
+              <td scope="row" style="text-align: center">{{ item.qtd }}</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal Imprimir Pedido Delivery-->
+<div *ngIf="pedidoImprimir !== null" class="modal fade bd-modalImprimirComandaDelivery-modal-xl" id="exampleModal"
+  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Imprimir Comanda Delivery</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-header">
+            Delivery
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Imprimir Comanda</h5>
+            <p class="card-text">Para imprimir a comanda de <strong>Delivery</strong> referente ao Pedido número:
+              <strong *ngIf="pedidoImprimir != null"><i>{{ pedidoImprimir.idPedido }}</i></strong> , clique no botão
+              abaixo.
+            </p>
+            <button (click)="imprimirComanda('Delivery')" class="btn btn-warning" data-dismiss="modal">Imprimir</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Modal Imprimir Pedido Preparo-->
+<div *ngIf="pedidoImprimir !== null" class="modal fade bd-modalImprimirComandaPreparo-modal-xl" id="exampleModal"
+  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Imprimir Comanda Preparo</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-header">
+            Preparo
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Imprimir Comanda</h5>
+            <p class="card-text">Para imprimir a comanda de <strong>Preparo</strong> referente ao Pedido número: <strong
+                *ngIf="OrderImprimir != null"><i>{{ pedidoImprimir.idPedido}}</i></strong> , clique no botão abaixo.
+            </p>
+            <button (click)="imprimirComanda('Preparo')" class="btn btn-warning" data-dismiss="modal">Imprimir</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--STATUS DA OPERAÇÃO-->
+<div class="modal fade bd-status-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalScrollableTitle">Status da Operação</h5>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h5 class="modal-title" id="exampleModalScrollableTitle">Status</h5>
+        <div class="justify-content-center offset-md-2">
+          <mat-progress-spinner color="warn" *ngIf="carregamentoPagina" mode="indeterminate"></mat-progress-spinner>
+
+          <h1 class="offset-md-1" style="font-size: 20px; color: black"> {{ mensagem }} </h1>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped" *ngIf="naoFinalizado">
+            <thead>
+              <tr>
+                <th scope="col" style="text-align: center">#</th>
+                <th scope="col" style="text-align: center">Nome</th>
+                <th scope="col" style="text-align: center">Valor Unitário</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let produto of produtosFaltando">
+                <td scope="row" style="text-align: center">{{ produto.id }}</td>
+                <td scope="row" style="text-align: center">{{ produto.nome }}</td>
+                <td scope="row" style="text-align: center">{{ produto.valorUnitario | currency :'BRL':true  }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col-12 modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="limparMensagem()" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Abrir Caixa-->
+<div class="modal fade bd-modalAbrirCaixa-modal-xl" id="exampleModal" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Abrir Caixa</h5>
+        <button type="button" class="close" (click)="limparMensagemCaixa()" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <div class="container-fluid">
+
+          <form [formGroup]="formularioAbrirCaixa" (ngSubmit)="abrirCaixa()">
+
+            <mat-form-field color="warn" class="example-full-width col-xl-6 col-md-12 col-sm-12"
+              matTooltip="Digite o valor para abrir o Caixa">
+              <mat-icon matSuffix><i class="fas fa-dollar-sign"></i></mat-icon>
+              <input type="number" matInput placeholder="Valor so Caixa" formControlName="valorCaixa">
+            </mat-form-field>
+            <button class="btn btn-warning col-xl-6 col-md-12 col-sm-12" [disabled]="!formularioAbrirCaixa.valid">Abrir
+              Cashier</button>
+          </form>
+        </div>
+
+        <div class="row" style="margin-top: 30px">
+
+          <mat-progress-bar *ngIf="carregamentoAbrirCaixa" mode="query" color="warn"></mat-progress-bar>
+
+          <div class="offset-md-1">
+            <h1 style="text-align: center" class="h3 mb-0 text-gray-800 align-items-center">{{ mensagemAbrirCaixa }}
+            </h1>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="limparMensagemCaixa()"
+          data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,157 @@
+<div class="container-fluid">
+    <div class="justify-content-center" style="margin-bottom: 20px"><a routerLink="" class="link font-italic"
+            style="color:orange">Painel de Controle</a> <strong> -></strong> Listar Todos Clientes</div>
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Clientes Cadastrados</h1>
+    </div>
+
+    <div class="row offset-md-2" style="margin-top: 0px;">
+
+        <div class="offset-md-2 col btn-group" matTooltip="Clique para exibir o campo de pesquisa"
+            style="margin-top: 10px;">
+            <mat-accordion>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Pesquisar por Cliente
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            Nome do Cliente
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+
+                    <mat-form-field color="warn">
+                        <mat-label>Nome do Cliente</mat-label>
+                        <input #nomeCliente matInput placeholder="Nome"
+                            (keyup)="buscarPorNomeCliente(nomeCliente.value)">
+                        <mat-icon matSuffix><i class="fas fa-user"></i></mat-icon>
+                    </mat-form-field>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top: 30px">
+
+        <mat-progress-bar *ngIf="carregamentoPagina" color="warn" mode="query"></mat-progress-bar>
+
+        <div class="table-responsive">
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col" style="text-align: center">#</th>
+                        <th scope="col" style="text-align: center">Nome do Cliente</th>
+                        <th scope="col" style="text-align: center">Telefone</th>
+                        <th scope="col" style="text-align: center">Rua</th>
+                        <th scope="col" style="text-align: center">Bairro</th>
+                        <th scope="col" style="text-align: center">Número</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr *ngFor="let cliente of clientes">
+                        <td scope="row" style="text-align: center">{{ cliente.idCliente }}</td>
+                        <td scope="row" style="text-align: center">{{ cliente.nomeCliente }}</td>
+                        <td scope="row" style="text-align: center">{{ cliente.telefone }}</td>
+                        <td scope="row" style="text-align: center">{{ cliente.rua }}</td>
+                        <td scope="row" style="text-align: center">{{ cliente.bairro }}</td>
+                        <td scope="row" style="text-align: center">{{ cliente.numero }}</td>
+                        <td scope="row" style="text-align: center">
+                            <button data-toggle="modal" (click)="editarCliente(cliente.idCliente)"
+                                data-target=".bd-editarCliente-modal-xl" class="btn btn-warning"
+                                style="margin-left: 5px">
+                                <i class="fa fa-pencil-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h1 style="text-align: center" class="h3 mb-0 text-gray-800">{{ mensagemCarregamento }}</h1>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Atualizar Cliente-->
+<div *ngIf="clienteVisualizar !== null && clienteVisualizar != undefined" class="modal fade bd-editarCliente-modal-xl"
+    id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Editar Cliente: {{ clienteVisualizar.nomeCliente }}</h5>
+                <button type="button" (click)="limparMensagem()" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <form *ngIf="mensagem == ''" [formGroup]="formularioAtualizarCliente" (ngSubmit)="atualizarCliente()">
+                    <div class="row">
+                        <div class="offset-md-2 col-xl-4 col-md-4 mb-12" matTooltip="Digite o nome do Cliente"
+                            style="margin-right: 20px;">
+                            <mat-form-field color="warn" class="example-full-width">
+                                <mat-icon matSuffix><i class="fas fa-text-width"></i></mat-icon>
+                                <input type="text" matInput placeholder="Nome do Cliente" formControlName="nomeCliente"
+                                    value="{{ clienteVisualizar.nomeCliente }}">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-xl-4 col-md-4 mb-12" matTooltip="Insira o número de telefone do Cliente"
+                            style="margin-right: 20px;">
+                            <mat-form-field color="warn" class="example-full-width">
+                                <mat-icon matSuffix><i class="fas fa-phone-alt"></i></mat-icon>
+                                <input type="number" matInput placeholder="Telefone" formControlName="telefone"
+                                    value="{{ clienteVisualizar.telefone }}">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-xl-4 col-md-4 mb-12" matTooltip="Insira o nome da rua"
+                            style="margin-right: 20px;">
+                            <mat-form-field color="warn" class="example-full-width">
+                                <mat-icon matSuffix><i class="fas fa-map-marker-alt"></i></mat-icon>
+                                <input type="text" matInput placeholder="Rua" formControlName="rua"
+                                    value="{{ clienteVisualizar.rua }}">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-xl-4 col-md-4 mb-12" matTooltip="Insira o nome do bairro"
+                            style="margin-right: 20px;">
+                            <mat-form-field color="warn" class="example-full-width">
+                                <mat-icon matSuffix><i class="fas fa-map-marker-alt"></i></mat-icon>
+                                <input type="text" matInput placeholder="Bairro" formControlName="bairro"
+                                    value="{{ clienteVisualizar.bairro }}">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-xl-2 col-md-4 mb-12" matTooltip="Insira o número da casa"
+                            style="margin-right: 20px;">
+                            <mat-form-field color="warn" class="example-full-width">
+                                <mat-icon matSuffix><i class="fas fa-sort-numeric-up-alt"></i></mat-icon>
+                                <input type="number" matInput placeholder="Número" formControlName="numero"
+                                    value="{{ clienteVisualizar.numero }}">
+                            </mat-form-field>
+                        </div>
+                        <div class="offset-md-4 col-xl-4 col-md-4 mb-12" style="margin-top: 5px"
+                            matTooltip="Preencha o formulário para habilitar o botão">
+                            <button type="submit" class="btn btn-warning">
+                                Atualizar Cliente
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div *ngIf="mensagem != ''">
+                    <h5 class="modal-title" id="exampleModalScrollableTitle">Status</h5>
+                    <div class="justify-content-center offset-md-4">
+                        <mat-progress-spinner *ngIf="carregamentoAtualizar" color="warn" mode="indeterminate">
+                        </mat-progress-spinner>
+
+                        <h1 style="font-size: 20px; color: black"> {{ mensagem }} </h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="limparMensagem()"
+                    data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,145 @@
+<div class="container-fluid">
+  <div class="justify-content-center" style="margin-bottom: 20px"><a routerLink="" class="link font-italic"
+      style="color:orange">Painel de Controle</a> <strong> -></strong> Listar Todo Estoque</div>
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Todo Estoque</h1>
+  </div>
+  <div class="offset-md-1 d-sm-flex align-items-center justify-content-between mb-4">
+    <h4 class="h4 mb-0 text-gray-700 font-italic">Buscar Produto</h4>
+  </div>
+  <div class="row offset-md-2" style="margin-top: 0px;">
+    <div class="col-xl-4 btn-group" matTooltip="Clique para filtrar por tipo" style="margin-top: 10px;">
+      <mat-radio-group color="warn" aria-label="Selecione o Tipo">
+        <mat-radio-button value="bebida" (click)="filtrarPorBebida()">Bebida</mat-radio-button>
+        <mat-radio-button value="comida" (click)="filtrarPorComida()" style="margin-left: 5px;">Comida
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+    <div class="col-xl-6 btn-group" matTooltip="Clique para exibir o sub-menu">
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Pesquisar por Nome
+            </mat-panel-title>
+            <mat-panel-description>
+              Nome do Produto
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <mat-form-field color="warn">
+            <mat-label>Nome do Produto</mat-label>
+            <input #nomeProduto matInput placeholder="Nome" (keyup)="buscarPorNomeProduto(nomeProduto.value)">
+            <mat-icon matSuffix><i class="fas fa-pizza-slice"></i></mat-icon>
+          </mat-form-field>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top: 30px">
+
+    <mat-progress-bar *ngIf="carregamentoPagina" mode="query" color="warn"></mat-progress-bar>
+    <div class="table-responsive">
+
+      <table class="table table-striped">
+
+        <thead>
+          <tr>
+            <th scope="col" style="text-align: center">#</th>
+            <th scope="col" style="text-align: center">Nome</th>
+            <th scope="col" style="text-align: center">Valor Unitário</th>
+            <th scope="col" style="text-align: center">Quantidade</th>
+            <th scope="col" style="text-align: center">Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let produto of produtos">
+            <td scope="row" style="text-align: center">{{ produto.id }}</td>
+            <td scope="row" style="text-align: center">{{ produto.nome }}</td>
+            <td scope="row" style="text-align: center">{{ produto.valorUnitario | currency :'BRL':true }}</td>
+            <td scope="row" style="text-align: center">{{ produto.quantidade }}</td>
+            <td scope="row" style="text-align: center">
+              <button data-toggle="modal" (click)="visualizarProduto(produto.id)"
+                data-target=".bd-visualizarProduto-modal-xl" class="btn btn-warning">
+                <i class="fa fa-pencil-alt"></i>
+              </button>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+      <h1 style="text-align: center" class="h3 mb-0 text-gray-800">{{ mensagemCarregamento }}</h1>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Atualizar produto-->
+<div *ngIf="produtoVisualizar !== null && produtoVisualizar != undefined"
+  class="modal fade bd-visualizarProduto-modal-xl" id="exampleModal" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Editar Produto</h5>
+        <button type="button" class="close" (click)="limparMensagem()" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="formularioAtualizarProduto" (ngSubmit)="atualizarProduto()" *ngIf="mensagem == '' ">
+          <div class="row">
+
+            <div class="offset-md-1 col-xl-3 col-md-4 mb-12" matTooltip="Digite o nome do Produto"
+              style="margin-right: 20px;">
+              <mat-form-field color="warn" class="example-full-width">
+                <mat-icon matSuffix><i class="fas fa-pizza-slice"></i></mat-icon>
+                <input matInput placeholder="Nome do Produto" value="{{ produtoVisualizar.nome }}"
+                  formControlName="nomeProduto">
+              </mat-form-field>
+            </div>
+
+            <div class="col-xl-3 col-md-4 mb-12"
+              matTooltip="Insira o valor unitário do Produto sem pontos e sem vírgulas" style="margin-right: 20px;">
+              <mat-form-field color="warn" class="example-full-width">
+                <mat-icon matSuffix><i class="fas fa-dollar-sign"></i></mat-icon>
+                <input type="number" matInput placeholder="Valor Unitário" value="{{ produtoVisualizar.valorUnitario }}"
+                  formControlName="valorUnitario">
+              </mat-form-field>
+            </div>
+
+            <div class="col-xl-3 col-md-4 mb-12"
+              matTooltip="Insira a quantidade desse Produto. Só é obrigatório caso deseje rastrear o Produto"
+              style="margin-right: 20px;">
+              <mat-form-field color="warn" class="example-full-width">
+                <mat-icon matSuffix><i class="fas fa-sort-numeric-up"></i></mat-icon>
+                <input type="number" (input)="inserirQuantidade()" matInput placeholder="Quantidade"
+                  value="{{ produtoVisualizar.quantidade }}" formControlName="quantidade">
+              </mat-form-field>
+            </div>
+            <div class="offset-md-4 col-xl-4 col-md-4 mb-12" style="margin-top: 5px"
+              matTooltip="Preencha o formulário para habilitar o botão">
+              <button type="submit" class="btn btn-warning" [disabled]="!formularioAtualizarProduto.valid">
+                Atualizar Produto
+              </button>
+            </div>
+
+          </div>
+        </form>
+        <div *ngIf="mensagem != ''">
+          <h5 class="modal-title" id="exampleModalScrollableTitle">Status</h5>
+          <div class="justify-content-center offset-md-4">
+            <mat-progress-spinner *ngIf="carregamentoAtualizar" color="warn" mode="indeterminate">
+            </mat-progress-spinner>
+
+            <h1 style="font-size: 20px; color: black"> {{ mensagem }} </h1>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="limparMensagem()" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>

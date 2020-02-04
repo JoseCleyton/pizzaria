@@ -1,0 +1,110 @@
+<div class="container-fluid">
+  <div class="justify-content-center" style="margin-bottom: 20px"><a routerLink="" class="link font-italic"
+      style="color:orange">Painel de Controle</a> <strong> -></strong> Relatórios</div>
+
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Relatórios</h1>
+  </div>
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h5 class="h5 mb-0 text-gray-800 btn btn-success">Débito:
+      <strong> {{ valorEmDebito | currency : 'BRL': true}} </strong></h5>
+    <h5 class="h5 mb-0 text-gray-800 btn btn-success">Crédito: <strong> {{ valorEmCredito | currency : 'BRL': true}}
+      </strong></h5>
+    <h5 class="h5 mb-0 text-gray-800 btn btn-success">Dinheiro: <strong> {{ valorEmDinheiro | currency : 'BRL': true}}
+      </strong></h5>
+  </div>
+  <div class="offset-md-1 d-sm-flex align-items-center justify-content-between mb-4">
+    <h4 class="h4 mb-0 text-gray-700 font-italic">Filtros: </h4>
+  </div>
+  <div class="row">
+
+    <div class="offset-md-4 col-xl-4 btn-group" matTooltip="Clique para filtrar por tipo de pagamento"
+      style="margin-bottom: 10px;">
+      <mat-radio-group color="warn" aria-label="Selecione o Tipo">
+        <mat-radio-button value="debito" (click)="filtrarPorDebito()" style="font-size: x-large">Débito
+        </mat-radio-button>
+        <mat-radio-button value="credito" (click)="filtrarPorCredito()" style="margin-left: 10px; font-size: x-large;">
+          Crédito
+        </mat-radio-button>
+        <mat-radio-button value="dinheiro" (click)="filtrarPorDinheiro()" style="margin-left: 10px; font-size: x-large">
+          Dinheiro
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <mat-progress-bar *ngIf="carregamentoPagina" color="warn" mode="indeterminate"></mat-progress-bar>
+    <div class="table-responsive">
+
+      <table class="table table-striped">
+
+        <thead>
+          <tr>
+            <th scope="col" style="text-align: center">#</th>
+            <th scope="col" style="text-align: center">Nome do Client</th>
+            <th scope="col" style="text-align: center">Data</th>
+            <th scope="col" style="text-align: center">Valor do Order</th>
+
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr *ngFor="let Order of relatorioOrders">
+            <td scope="row" style="text-align: center">{{ Order.idOrder }}</td>
+            <td scope="row" style="text-align: center">{{ Order.nomeClient }}</td>
+            <td scope="row" style="text-align: center">{{ Order.dataOrder }}</td>
+            <td scope="row" style="text-align: center">{{ Order.valorOrder | currency :'BRL':true }}</td>
+
+          </tr>
+        </tbody>
+      </table>
+
+      <h1 style="text-align: center" class="h3 mb-0 text-gray-800">{{ mensagemCarregamento }}</h1>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Confirmar Retirada -->
+<div class="modal fade bd-confirmarRetirada-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <mat-progress-bar *ngIf="carregamentoPagina" mode="indeterminate"></mat-progress-bar>
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalScrollableTitle">Confirmar Retirada</h5>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h5 class="modal-title" id="exampleModalScrollableTitle">Valor a ser Retirado do Cashier</h5>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col" style="text-align: center">Observações</th>
+                <th scope="col" style="text-align: center">Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td scope="row" style="text-align: center">{{ descricaoRetirada }}</td>
+                <td scope="row" style="text-align: center">{{ valorRetirada | currency :'BRL':true }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+
+        <div class="offset-md-2 col-6">
+          <h1 style="font-size: 20px; color: black"> {{ mensagem }} </h1>
+        </div>
+
+      </div>
+      <div class="col-12 modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="limparMensagem()" data-dismiss="modal">Fechar</button>
+        <button type="submit" (click)="efetivarRetirada()" class="btn btn-success">Efetivar Retirada</button>
+      </div>
+    </div>
+  </div>
+</div>
