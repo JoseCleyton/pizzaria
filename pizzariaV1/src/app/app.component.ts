@@ -40,13 +40,14 @@ export class AppComponent {
   }
 }
 var firebaseConfig = {
-  apiKey: "AIzaSyBTumzBd0B1EJlQbqU_tktDwIBlS_WfGxU",
-  authDomain: "divinaprovidencia-dev.firebaseapp.com",
-  databaseURL: "https://divinaprovidencia-dev.firebaseio.com",
-  projectId: "divinaprovidencia-dev",
-  storageBucket: "divinaprovidencia-dev.appspot.com",
-  messagingSenderId: "619814247873",
-  appId: "1:619814247873:web:8fd3c1c2738f5f6cf9a340"
+  // Insira os dados da sua conta do Firebase
+  apiKey: "",
+  authDomain: "",
+  databaseURL: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: ""
 };
 firebase.initializeApp(firebaseConfig);
 // Initialize Firebase
